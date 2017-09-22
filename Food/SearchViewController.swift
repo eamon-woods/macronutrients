@@ -53,7 +53,7 @@ class SearchViewController: UIViewController, FoodDetailViewControllerDelegate {
     }
     
     func seeMoreButtonWasTapped() {
-        numFoodsDisplayed = numFoodsDisplayed + 5
+        numFoodsDisplayed = numFoodsDisplayed + 10
         if (foods?.count)! <= numFoodsDisplayed {
             //force unwrap is okay because it can only be tapped if we fetched foods
             seeMoreFoodsButton.isHidden = true

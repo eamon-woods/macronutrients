@@ -40,19 +40,20 @@ class TodaysFoodsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         todaysFoodsTableView.reloadData()
     }
-    
+    /*
     override func viewWillDisappear(_ animated: Bool) {
         let macrosVC = todaysFoodsViewControllerDelegate as! MacrosViewController
         macrosVC.addUpMacros()
         macrosVC.updateMacroLabels()
     }
+     */
 }
 
 extension TodaysFoodsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let (food, quantity, measurement) = todaysFoodsViewControllerDelegate.todaysFoods[indexPath.row]
-        cell.textLabel?.text = "\(food.name), Quantity: \(quantity), measurement: \(measurement)"
+        cell.textLabel?.text = "\(food.name), quantity: \(quantity), measurement: \(measurement)"
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
         return cell
@@ -60,8 +61,10 @@ extension TodaysFoodsViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let (food, quantity, measurement) = todaysFoodsViewControllerDelegate.todaysFoods[indexPath.row]
-        return CGFloat(ceil(Double("\(food.name), Quantity: \(quantity), measurement: \(measurement)".characters.count) / 20.0) * 20 + 20)
-        //20 is roughly number of characters on a line
+        let strToDisplay = "\(food.name), quantity: \(quantity), measurement: \(measurement)"
+        let maxCharsOnLine = 20.0 //20 is roughly number of characters on a line
+        let numLines = ceil(Double(strToDisplay.characters.count) / maxCharsOnLine)
+        return CGFloat(numLines * 20.0 + 20)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -75,7 +78,9 @@ extension TodaysFoodsViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             todaysFoodsViewControllerDelegate.todaysFoods.remove(at: indexPath.row)
-            todaysFoodsTableView.reloadData()
+            todaysFoodsTableView.deleteRows(at: [indexPath], with: .automatic)
+            let macrosVC = todaysFoodsViewControllerDelegate as! MacrosViewController
+            macrosVC.update()
         }
     }
 }

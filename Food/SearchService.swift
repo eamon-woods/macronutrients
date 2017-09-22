@@ -17,7 +17,7 @@ class SearchService {
     func getFoodsMatchingSearch(search: String, completion: @escaping ([Food]) -> Void) {
         dataTask?.cancel()
         guard var urlComponents = URLComponents(string: apiUrl) else { return }
-        let maxReturned = "10"
+        let maxReturned = "100"
         urlComponents.query = "format=JSON&q=\(search)&max=\(maxReturned)&ds=Standard Reference&api_key=oCHvjrL6ZNqKf42mosy3ngoWj2o4U7SGhTF8puBp"
         guard let url = urlComponents.url else { return }
         dataTask = urlSession.dataTask(with: url, completionHandler: { (data, urlResponse, error) in

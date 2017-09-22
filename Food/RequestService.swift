@@ -52,7 +52,7 @@ class RequestService {
         for nutrient in nutrients {
             guard let name = nutrient["name"] as? String,
                 let unit = nutrient["unit"] as? String else { return (nil, nil, nil) }
-            if name == "Water" || (name == "Energy" && unit == "kcal") || name == "Protein" || name == "Total lipid (fat)" || name == "Carbohydrate, by difference" || name == "Fiber, total dietary" || name == "Sugars, total" {
+            if (name == "Energy" && unit == "kcal") || name == "Protein" || name == "Total lipid (fat)" || name == "Carbohydrate, by difference" {
                     guard let value100g = nutrient["value"] as? Double,
                         let measures = nutrient["measures"] as? [[String: Any]] else { return (nil, nil, nil) }
                     nutrientsAndTheirValues[name] = [:]
@@ -71,9 +71,15 @@ class RequestService {
                 }
         }
         var acceptableMeasurements: [String] = ["grams"] //For all nutrients, always have value for a 100gmeasurement of the food
+        //print(nutrientsAndTheirValues)
+        //print(measurements)
         for (measurement, frequency) in measurements {
-            if frequency == 7 {
-                //i.e. every nutrient is measured in terms of thismeasurement
+            if frequency > 0 && (frequency % 4 == 0) {
+                //i.e. every nutrient is measured in terms of this measurement. (there is a boundary case where
+                //each nutrient is measured in terms of the same measurement more than once, e.g. nbdno 14056.
+                //the nutsAndVals dictionary will still be good b/c it just overwrites the old measurement.
+                //but we make sure that other measurements are measured a multiple of 4 times, b/c we don't
+                //want them to be measured more than 7 times, but only for some nutrients.)
                 acceptableMeasurements.append(measurement)
             }
         }

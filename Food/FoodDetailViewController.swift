@@ -22,7 +22,7 @@ class FoodDetailViewController: UIViewController {
     var quantityLabel: UILabel!
     var quantityTextField: UITextField!
     var addFoodToTodaysFoodsButton: UIButton!
-    var foodToAddToTodaysFoodsLabel: UILabel?
+    var foodToAddToTodaysFoodsLabel: UILabel? = nil
     var foodDetailViewControllerDelegate: FoodDetailViewControllerDelegate?
     var foodNameLabel: UILabel!
     
@@ -111,6 +111,7 @@ class FoodDetailViewController: UIViewController {
             //we know quantityTextField will have text if this button action is triggered
             foodDetailViewControllerDelegate?.addFoodToTodaysFoods(food: food, quantity: quantity,measurement: food.acceptableMeasurements![measurementPicker.selectedRow(inComponent: 0)])
         }
+        navigationController?.popToRootViewController(animated: true)
     }
     
     func dismissTextFieldKeyboard() {
@@ -159,7 +160,10 @@ extension FoodDetailViewController: UIPickerViewDataSource, UIPickerViewDelegate
                     longestMeasurement = measurement
                 }
             }
-            return CGFloat(ceil(Double(longestMeasurement.characters.count) / 15.0) * 20 + 5)
+            let charactersOnALine = 15.0
+            let numLines = ceil(Double(longestMeasurement.characters.count) / charactersOnALine)
+            let desiredLineHeight = 20.0
+            return CGFloat(numLines * desiredLineHeight + 5)
         }
         return 25
     }
